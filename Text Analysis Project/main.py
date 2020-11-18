@@ -72,7 +72,7 @@ if answer == "l":
 		if guess > maximum: maximum = guess
 	plotting.plot_guesses_graph(counts, guesses, maximum, ["guess_num", "guess_val"])
 else:
-	plotting.plot_word_freqs_graph(word_freqs, letters, file_name, gamemode)
+	plotting.plot_pie_chart(word_freqs, letters, file_name, gamemode)
 
 '''
 TO DO LIST

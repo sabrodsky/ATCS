@@ -50,7 +50,7 @@ def pie_chart_letter_info(letter_list):
 		other_count += 1
 	return sizes, labels, other_count
 
-def plot_word_freqs_graph(freqs, letters, file_name, mode):
+def plot_pie_chart(freqs, letters, file_name, mode):
 	#pie chart set up
 	if mode == "word":
 		sorted_freqs = freq_to_list(freqs)
