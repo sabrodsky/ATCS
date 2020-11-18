@@ -33,9 +33,9 @@ def pie_chart_word_info(sort_freqs):
 			other_count += 1
 	#if the frequency is lower than 20
 	if len(sizes) == 0:
-		for pair in sort_freqs[:5]:
-			sizes.append(pair[0])
-			labels.append(pair[1])
+		for x in range(5):
+			sizes.append(sort_freqs[x][0])
+			labels.append(sort_freqs[x][1])
 			other_count -= 1
 	return sizes, labels, other_count
 
@@ -62,8 +62,9 @@ def plot_word_freqs_graph(freqs, letters, file_name, mode):
 
 	#pie chart configurations
 	fig1, ax1 = plt.subplots()
-	ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
+	ax1.pie(sizes, labels=sizes, autopct='%1.1f%%',
 			shadow=True, startangle=90)
 	ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 	ax1.set_title("{0} Frequencies within the file {1}".format(camelcase(mode), file_name))
+	legend = ax1.legend(labels, loc='best')
 	plt.show()
