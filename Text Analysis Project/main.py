@@ -1,29 +1,29 @@
 import analysis, replit, random, plotting
 
-urls = ['https://www.w3.org/TR/PNG/iso_8859-1.txt']
-files = ['gettysburg.txt', 'hippocraticoath.txt']
-file_names = ["Gettysburg Address", 'Hippocratic Oath', 'Graphical Characters']
+urls = ['https://www.w3.org/TR/PNG/iso_8859-1.txt'] #web page
+files = ['gettysburg.txt', 'hippocraticoath.txt'] #txt files
 
 #choosing the text file / url
 if random.randint(0, 1) == 1:
 	url = random.choice(urls)
 	print(url)
 	data = analysis.get_web_text(url)
-	file_name = file_names[2]
+	file_name = 'Graphical Characters'
 else:
 	url = random.choice(files)
-	print(url)
 	data = analysis.get_file_text(url)
 	if url == "gettysburg.txt":
-		file_name = file_names[0]
+		file_name = 'Gettysburg Address'
 	else:
-		file_name = file_names[1]
+		file_name = 'Hippocratic Oath'
 
 #setting up the text files
 sentences = analysis.get_sentences(data)
 words = analysis.get_words(sentences)
 words = analysis.clean(words)
+#if gamemode is words
 word_freqs = analysis.get_word_freqs(words)
+#if gamemode is letters
 letters = analysis.get_letter_freqs(words)
 replit.clear()
 print("---------------")
@@ -48,6 +48,7 @@ counts = [0]
 
 #playing the game
 while running:
+	#dynamic input so I don't have two different while loops
 	user_guess = int(input("How many times do you think the {0} '{1}' is in the {2} file?: ".format(gamemode, secret_word, file_name)))
 	guesses.append(user_guess)
 	count += 1
@@ -66,12 +67,9 @@ while answer != "l" or answer != "p":
 	if answer == "l" or answer == "p":
 		break
 	answer = input("Line graph or a pie chart? (l/p): ")
-if answer == "l":
-	maximum = 0
-	for guess in guesses:
-		if guess > maximum: maximum = guess
-	plotting.plot_guesses_graph(counts, guesses, maximum, ["guess_num", "guess_val"])
-else:
+if answer == "l": #line graph
+	plotting.plot_guesses_graph(counts, guesses, ["guess_num", "guess_val"])
+else: #pie chart
 	plotting.plot_pie_chart(word_freqs, letters, file_name, gamemode)
 
 '''

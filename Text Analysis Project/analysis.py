@@ -17,18 +17,17 @@ def get_sentences(file):
 			line_list.append(line) #removes paragraph breaks
 	return line_list
 
+#removes unwanted stuff and only keeps the allowed characters
 def clean(words):
 	cleaned_list = []
 	allowed = "abcdefghijklmnopqrstuvwxyz01234567890"
 	for word in words:
 		word_string = word.replace('\n', '')
 		empty_string = ""
-		for char in word:
+		for char in word_string:
 			if char in allowed:
 				empty_string += char
 		cleaned_list.append(empty_string)
-	return cleaned_list
-
 	return cleaned_list
 
 def get_words(lines):
@@ -52,7 +51,7 @@ def get_letter_freqs(words):
 	freqs_list = []
 	for word in words:
 		word = word.lower()
-		if word.isalpha():
+		if word.isalpha(): #checks if word is only letters
 			for char in word:
 				if char in freqs.keys():
 					freqs[char] += 1

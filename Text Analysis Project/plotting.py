@@ -1,11 +1,12 @@
 import matplotlib.pyplot as plt
 
+#made my own camelcase function
 def camelcase(word):
 	s = "".join(word[0].upper() + word[1:].lower())
 	return s
 
 #plotting the line graph
-def plot_guesses_graph(x_vals, y_vals, max_y, axis_names):
+def plot_guesses_graph(x_vals, y_vals, axis_names):
 	fig, ax = plt.subplots(1,1)
 	ax.plot(x_vals, y_vals)
 	ax.set_xlabel("count number")
@@ -62,9 +63,10 @@ def plot_pie_chart(freqs, letters, file_name, mode):
 
 	#pie chart configurations
 	fig1, ax1 = plt.subplots()
-	ax1.pie(sizes, labels=sizes, autopct='%1.1f%%',
-			shadow=True, startangle=90)
+	#sets percents to show one decimal
+	ax1.pie(sizes, labels=sizes, autopct='%1.1f%%')
 	ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 	ax1.set_title("{0} Frequencies within the file {1}".format(camelcase(mode), file_name))
-	legend = ax1.legend(labels, loc='best')
+	#gives legend to make it easier for user to understand
+	ax1.legend(labels, loc='best')
 	plt.show()
