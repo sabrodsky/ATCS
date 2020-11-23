@@ -5,7 +5,7 @@ import pygame, random
 pygame.init()
 
 # Set up the drawing window (every aspect changes dynamically so you can easily change window size)
-window_x, window_y = 600,600
+window_x, window_y = 500,500
 screen = pygame.display.set_mode((window_x,window_y))
 
 # Run until the user asks to quit
@@ -69,7 +69,7 @@ while running:
     for x in range(9): #mid row
         pygame.draw.circle(screen, colors[ornament_list[(color_count+x+5)%len(ornament_list)]], ((135*x_ratio)+(x*(25*x_ratio)),(285*y_ratio)-(x*(10*y_ratio))), 10)
     for x in range(12): #bottom row
-        pygame.draw.circle(screen, colors[ornament_list[(color_count+x+9)%len(ornament_list)]], ((80*x_ratio)+(x*(25*x_ratio)),(438*y_ratio)-(x*(10*y_ratio))), 10)
+        pygame.draw.circle(screen, colors[ornament_list[(color_count+x+5)%len(ornament_list)]], ((80*x_ratio)+(x*(25*x_ratio)),(438*y_ratio)-(x*(10*y_ratio))), 10)
 
     # Pause
     pygame.display.flip()
