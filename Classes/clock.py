@@ -1,3 +1,5 @@
+#for this project, i'm making a clock
+
 #you will need to install pygame of course
 import pygame, math
 
@@ -11,7 +13,7 @@ pygame.display.set_caption('Clock Program')
 
 # Run until the user asks to quit
 running = True
-seconds = 45
+seconds = 45 #the second hand starts at the top
 
 #hour hand
 class Hour:
@@ -69,12 +71,15 @@ while running:
     # minute_hand.show()
     second_hand.show()
 
+#just some calculations
 # in radians
 # x = originx + r * cos(a)
 # y = originy + r * sin(a)
 
     # Flip the display
     pygame.display.flip()
+
+    #small increments to make motion more fluid
     pygame.time.delay(50)
     seconds += 0.05
 
