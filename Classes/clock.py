@@ -26,7 +26,7 @@ class Hour:
     def move(self, seconds):
         self.pos += 1/1440
     def show(self, seconds):
-        pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x + 100*math.cos(2*math.pi*(self.pos/12)), self.y + 100*math.sin(2*math.pi*(self.pos/12))), 6)
+        pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x + 100*math.cos(2*math.pi*(self.pos/12)), self.y + 100*math.sin(2*math.pi*(self.pos/12))), 5)
 hour_hand = Hour(window_x/2, window_y/2, (current_time.hour - 3)%12, current_time.minute)
 
 #minute hand
@@ -38,7 +38,7 @@ class Minute:
     def move(self, seconds):
         self.pos += 0.05
     def show(self, seconds):
-        pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x+175*math.cos(2*math.pi*(self.pos/60)), self.y+175*math.sin(2*math.pi*(self.pos/60))), 5)
+        pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x+170*math.cos(2*math.pi*(self.pos/60)), self.y+170*math.sin(2*math.pi*(self.pos/60))), 5)
 minute_hand = Minute(window_x/2, window_y/2, current_time.minute)
 
 #second hand
