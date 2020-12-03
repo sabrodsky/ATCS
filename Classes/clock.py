@@ -1,5 +1,8 @@
 #for this project, i'm making a clock that displays correct time
-#for now, the hour hand is broken and i'm working on making the movement more fluid
+#the thing I was having trouble with was the hour and second hands
+    #the second hand was moving too fast at the calculated time delay so I needed to figure that out
+    #the hour hand wasn't correctly representing the current hours and I didn't know the correct calculations
+        #I finally figured out the calculations!! YAY!!!!!!!!!!!!!!
 
 #you will need to install pygame of course
 import pygame, math, datetime
