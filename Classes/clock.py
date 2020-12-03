@@ -19,17 +19,15 @@ current_time = datetime.datetime.now() #get current time
 
 #hour hand
 class Hour:
-    def __init__(self, x, y, hours):
+    def __init__(self, x, y, hours, mins):
         self.x = x
         self.y = y
-        self.pos = hours
+        self.pos = hours + (mins/60)
     def move(self, seconds):
-        if int(seconds - 60-current_time.second)%60 == 0:
-            self.pos += 1/60
+        self.pos += 1/1440
     def show(self, seconds):
-        self.move(seconds)
-        pygame.draw.line(screen, (0,0,255), (self.x, self.y), (self.x+125*math.cos(2*math.pi*(self.pos/360)), self.y+125*math.sin(2*math.pi*(self.pos/360))), 5)
-hour_hand = Hour(window_x/2, window_y/2, (current_time.hour + (-5))%12)
+        pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x + 100*math.cos(2*math.pi*(self.pos/12)), self.y + 100*math.sin(2*math.pi*(self.pos/12))), 6)
+hour_hand = Hour(window_x/2, window_y/2, (current_time.hour - 3)%12, current_time.minute)
 
 #minute hand
 class Minute:
@@ -37,13 +35,10 @@ class Minute:
         self.x = x
         self.y = y
         self.pos = minutes - 15
-        self.offset = 59 - current_time.second #makes sure the minute hand only updates when second hand is at 12
     def move(self, seconds):
-        if int(seconds - self.offset)%60 == 0: #only happens if second hand is at 12
-            self.pos += 1
+        self.pos += 0.05
     def show(self, seconds):
-        self.move(seconds)
-        pygame.draw.line(screen, (0,255,0), (self.x, self.y), (self.x+175*math.cos(2*math.pi*(self.pos/60)), self.y+175*math.sin(2*math.pi*(self.pos/60))), 5)
+        pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x+175*math.cos(2*math.pi*(self.pos/60)), self.y+175*math.sin(2*math.pi*(self.pos/60))), 5)
 minute_hand = Minute(window_x/2, window_y/2, current_time.minute)
 
 #second hand
@@ -53,7 +48,7 @@ class Second:
         self.y = y
         self.pos = seconds - 15
     def move(self):
-        self.pos += 1
+        self.pos += 0.05
     def show(self):
         self.move()
         # pygame.draw.circle(screen, (0,255,255), (self.x + 200*math.cos(2*math.pi*(self.pos/60)), self.y + 200*math.sin(2*math.pi*(self.pos/60))), 5)
@@ -82,6 +77,9 @@ while running:
     pygame.draw.circle(screen, (0,0,0), (window_x/2, window_y/2), 200, 5)
     pygame.draw.circle(screen, (0,0,0), (window_x/2,window_y/2), 5)
 
+    if int(seconds)%60 == (59 - current_time.second):
+        minute_hand.move(seconds)
+        hour_hand.move(seconds)
     hour_hand.show(seconds)
     minute_hand.show(seconds)
     second_hand.show()
@@ -90,8 +88,8 @@ while running:
     pygame.display.flip()
 
     #small increments to make motion more fluid
-    pygame.time.delay(1000)
-    seconds += 1
+    pygame.time.delay(50)
+    seconds += 0.05
 
 # Done! Time to quit.
 pygame.quit()
