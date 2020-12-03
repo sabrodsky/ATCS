@@ -38,7 +38,7 @@ class Minute:
     def move(self, seconds):
         self.pos += 0.05
     def show(self, seconds):
-        pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x+170*math.cos(2*math.pi*(self.pos/60)), self.y+170*math.sin(2*math.pi*(self.pos/60))), 5)
+        pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x+150*math.cos(2*math.pi*(self.pos/60)), self.y+150*math.sin(2*math.pi*(self.pos/60))), 5)
 minute_hand = Minute(window_x/2, window_y/2, current_time.minute)
 
 #second hand
@@ -88,7 +88,7 @@ while running:
     pygame.display.flip()
 
     #small increments to make motion more fluid
-    pygame.time.delay(50)
+    pygame.time.delay(49)
     seconds += 0.05
 
 # Done! Time to quit.
