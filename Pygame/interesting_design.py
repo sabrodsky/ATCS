@@ -33,7 +33,8 @@ class Snowflake:
         self.pos_y += self.change_y
     def draw_snowflake(self, x,y):
         pygame.draw.circle(screen, colors['white'], (x,y), 1)
-snowflakes = []
+snowflakes_behind = []
+snowflakes_front = []
 
 while running:
 # Did the user click the window close button?
@@ -46,12 +47,13 @@ while running:
 
     #add snowflakes to list
     if snow_count%7 == 0:
-        snowflakes.append(Snowflake(random.randint(5, (window_x-5)),0))
+        snowflakes_behind.append(Snowflake(random.randint(5, (window_x-5)),0))
+        snowflakes_front.append(Snowflake(random.randint(5, (window_x-5)),0))
     #move and draw snowflakes
-    for snowflake in snowflakes:
+    for snowflake in snowflakes_behind:
         snowflake.move_snowflake()
         if snowflake.pos_y >= (window_y + 5):
-            snowflakes.remove(snowflake)
+            snowflakes_behind.remove(snowflake)
         else:
             snowflake.draw_snowflake(snowflake.pos_x, snowflake.pos_y)
 
@@ -70,6 +72,14 @@ while running:
         pygame.draw.circle(screen, colors[ornament_list[(color_count+x+5)%len(ornament_list)]], ((135*x_ratio)+(x*(25*x_ratio)),(285*y_ratio)-(x*(10*y_ratio))), 10)
     for x in range(12): #bottom row
         pygame.draw.circle(screen, colors[ornament_list[(color_count+x+5)%len(ornament_list)]], ((80*x_ratio)+(x*(25*x_ratio)),(438*y_ratio)-(x*(10*y_ratio))), 10)
+
+    #move and draw snowflakes
+    for snowflake in snowflakes_front:
+        snowflake.move_snowflake()
+        if snowflake.pos_y >= (window_y + 5):
+            snowflakes_front.remove(snowflake)
+        else:
+            snowflake.draw_snowflake(snowflake.pos_x, snowflake.pos_y)
 
     # Pause
     pygame.display.flip()

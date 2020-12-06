@@ -63,8 +63,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    # if seconds >= 60:
-    #     running = False
 
     # Fill the background with white
     screen.fill((255, 255, 255))
