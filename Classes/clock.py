@@ -1,13 +1,9 @@
 #for this project, i'm making a clock that displays correct time
-#the thing I was having trouble with was the hour and second hands
-    #the second hand was moving too fast at the calculated time delay so I needed to figure that out
-    #the hour hand wasn't correctly representing the current hours and I didn't know the correct calculations
-        #I finally figured out the calculations!! YAY!!!!!!!!!!!!!!
 
-#you will need to install pygame of course
+#note: sometimes the seconds are off because of delays in getting actual
+#time and then showing the clock... so it may be incorrect by a second or two
+
 import pygame, math, datetime
-
-#launch the pygame module
 pygame.init()
 
 # Set up the drawing window
@@ -30,7 +26,6 @@ class Hour:
         self.pos += 1/1440
     def show(self, seconds):
         pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x + 100*math.cos(2*math.pi*(self.pos/12)), self.y + 100*math.sin(2*math.pi*(self.pos/12))), 5)
-hour_hand = Hour(window_x/2, window_y/2, (current_time.hour - 3)%12, current_time.minute)
 
 #minute hand
 class Minute:
@@ -42,7 +37,6 @@ class Minute:
         self.pos += 0.05
     def show(self, seconds):
         pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x+150*math.cos(2*math.pi*(self.pos/60)), self.y+150*math.sin(2*math.pi*(self.pos/60))), 5)
-minute_hand = Minute(window_x/2, window_y/2, current_time.minute)
 
 #second hand
 class Second:
@@ -56,7 +50,37 @@ class Second:
         self.move()
         # pygame.draw.circle(screen, (0,255,255), (self.x + 200*math.cos(2*math.pi*(self.pos/60)), self.y + 200*math.sin(2*math.pi*(self.pos/60))), 5)
         pygame.draw.line(screen, (255,0,0), (self.x, self.y), (self.x+190*math.cos(2*math.pi*(self.pos/60)), self.y+190*math.sin(2*math.pi*(self.pos/60))), 5)
-second_hand = Second(window_x/2, window_y/2, current_time.second)
+
+class Clock:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.second_hand = Second(window_x/2, window_y/2, current_time.second)
+        self.minute_hand = Minute(window_x/2, window_y/2, current_time.minute)
+        self.hour_hand = Hour(window_x/2, window_y/2, (current_time.hour - 3)%12, current_time.minute)
+    def move(self, seconds):
+        if int(seconds)%60 == (59 - current_time.second):
+            minute_hand.move(seconds)
+            hour_hand.move(seconds)
+    def show(self, seconds):
+        #actual clock:
+        for x in range(60):
+            if x%5 == 0:
+                pygame.draw.line(screen, (0,0,0), (250 + 160*math.cos(2*math.pi*(x/60)), 250 + 160*math.sin(2*math.pi*(x/60))), (250 + 180*math.cos(2*math.pi*(x/60)), 250 + 180*math.sin(2*math.pi*(x/60))), 6)
+            else:
+                pygame.draw.circle(screen, (0,0,0), (250 + 180*math.cos(2*math.pi*(x/60)), 250 + 180*math.sin(2*math.pi*(x/60))), 3)
+        pygame.draw.circle(screen, (0,0,0), (window_x/2, window_y/2), 200, 5)
+        pygame.draw.circle(screen, (0,0,0), (window_x/2,window_y/2), 5)
+
+        #second hand:
+        self.second_hand.show()
+
+        #minute hand:
+        self.minute_hand.show(seconds)
+
+        #hour hand:
+        self.hour_hand.show(seconds)
+clock = Clock(window_x/2, window_y/2)
 
 while running:
 # Did the user click the window close button?
@@ -67,29 +91,14 @@ while running:
     # Fill the background with white
     screen.fill((255, 255, 255))
 
-    # dots for the numbers on the clock (couldn't figure out text)
-    for x in range(60):
-        if x%5 == 0:
-            pygame.draw.line(screen, (0,0,0), (250 + 160*math.cos(2*math.pi*(x/60)), 250 + 160*math.sin(2*math.pi*(x/60))), (250 + 180*math.cos(2*math.pi*(x/60)), 250 + 180*math.sin(2*math.pi*(x/60))), 6)
-        else:
-            pygame.draw.circle(screen, (0,0,0), (250 + 180*math.cos(2*math.pi*(x/60)), 250 + 180*math.sin(2*math.pi*(x/60))), 3)
-
-    # Draw outline of clock
-    pygame.draw.circle(screen, (0,0,0), (window_x/2, window_y/2), 200, 5)
-    pygame.draw.circle(screen, (0,0,0), (window_x/2,window_y/2), 5)
-
-    if int(seconds)%60 == (59 - current_time.second):
-        minute_hand.move(seconds)
-        hour_hand.move(seconds)
-    hour_hand.show(seconds)
-    minute_hand.show(seconds)
-    second_hand.show()
+    #display the clock
+    clock.show(seconds)
 
     # Flip the display
     pygame.display.flip()
 
     #small increments to make motion more fluid
-    pygame.time.delay(49)
+    pygame.time.delay(49) #hoped to fix the time error...
     seconds += 0.05
 
 # Done! Time to quit.
