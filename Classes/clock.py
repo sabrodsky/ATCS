@@ -22,7 +22,7 @@ class Hour:
         self.x = x
         self.y = y
         self.pos = hours + (mins/60)
-    def move(self, seconds):
+    def move(self):
         self.pos += 1/1440
     def show(self):
         pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x + 100*math.cos(2*math.pi*(self.pos/12)), self.y + 100*math.sin(2*math.pi*(self.pos/12))), 5)
@@ -33,7 +33,7 @@ class Minute:
         self.x = x
         self.y = y
         self.pos = minutes - 15
-    def move(self, seconds):
+    def move(self):
         self.pos += 0.05
     def show(self):
         pygame.draw.line(screen, (0,0,0), (self.x, self.y), (self.x+150*math.cos(2*math.pi*(self.pos/60)), self.y+150*math.sin(2*math.pi*(self.pos/60))), 5)
@@ -58,9 +58,9 @@ class Clock:
         self.second_hand = Second(window_x/2, window_y/2, current_time.second)
         self.minute_hand = Minute(window_x/2, window_y/2, current_time.minute)
         self.hour_hand = Hour(window_x/2, window_y/2, (current_time.hour - 3)%12, current_time.minute)
-    def move(self, seconds):
-        self.minute_hand.move(seconds)
-        self.hour_hand.move(seconds)
+    def move(self):
+        self.minute_hand.move()
+        self.hour_hand.move()
     def show(self):
         #actual clock:
         for x in range(60):
@@ -89,7 +89,7 @@ while running:
 
     #display the clock
     if int(seconds)%60 == (59 - current_time.second):
-        clock.move(seconds)
+        clock.move()
     clock.show()
 
     # Flip the display
