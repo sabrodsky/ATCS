@@ -42,11 +42,10 @@ class User:
         #assign user variables (finally!)
         self.name = self.name_entry.get()
         chosen_username = self.user_entry.get()
-        while chosen_username in users.keys():
+        if chosen_username in users.keys():
             messagebox.showerror("Error", "Username is not available")
-            self.user_entry = tk.Entry(master=self.frm_form, width=15)
-            self.user_entry.grid(row=1, column=1)
-            chosen_username = self.user_entry.get()
+            self.window.destroy()
+            self.tk_user_form()
         self.username = self.user_entry.get()
         #close application
         self.window.destroy()
@@ -75,5 +74,5 @@ class User:
 
 for _ in range(2):
     new_user = User()
-    users[new_user.username] = User()
+    users[new_user.username] = new_user
 print(users)
