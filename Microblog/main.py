@@ -2,11 +2,16 @@ import tkinter as tk
 from tkinter import messagebox
 
 users = {}
-posts = []
-current_usernames = []
+posts = {'all_users': []}
+current_users = []
+
+def get_current_users():
+    current_users = [username for username in users]
+    return current_users
 
 class Message:
-    def __init__(self):
+    def __init__(self, user):
+        self.user = user
         self.message = input("Enter a message: ")
 
 class User:
@@ -14,7 +19,10 @@ class User:
         #just some class stuff
         self.name = None
         self.username = None
+        self.inbox = []
+
         self.tk_user_form()
+
     def tk_user_form(self):
         # TKINTER HELL
         self.window = tk.Tk()
@@ -50,29 +58,50 @@ class User:
         #close application
         self.window.destroy()
     def new_post(self):
-        post = Message()
-        posts.append(post.message)
+        post = Message(self.name)
+        posts['all_users'].append(post)
+        posts[self.username].append(post.message)
+    def view_posts(self):
+        for post in posts['all_users']:
+            print("{0}: {1}".format(
+                post.user,
+                post.message
+            ))
     def send_message(self):
+        current_users.remove(self.username)
+        print(current_users)
         n = input("Who do you want to send your message to? (enter a username): ")
-        #making sure the user picks an existing username
-        if n in users.keys():
+        #making sure the user picks an existing username that is not their own
+        if n in current_users:
             user = n
         else:
-            while n not in users.keys():
+            while n not in current_users:
+                print(current_users)
                 n = input("Who do you want to send your message to? (enter a username): ")
             user = n
-        message = Message()
-        self.sent_messages.append(message)
+        message = Message(self.name)
         users[user].inbox.append(message)
+        current_users.append(self.username)
     def view_inbox(self):
         #goes through every message
         for message in self.inbox:
-            print(message.message)
+            print("From {0}: {1}".format(
+                message.user,
+                message.message
+            ))
             self.inbox.remove(message)
-            #read messages are useless so... we delete them
-            self.read_messages.append(message.message)
 
 for _ in range(2):
+    #must run this every time you make new user!!!
     new_user = User()
     users[new_user.username] = new_user
-print(users)
+    posts[new_user.username] = []
+    current_users = get_current_users()
+
+for user in users: #returns the key rather than the value
+    users[user].send_message()
+    if len(users[user].inbox) >= 1:
+        print("You have new messages!")
+        users[user].view_inbox()
+    else:
+        print("You have no new messages!")
