@@ -9,21 +9,13 @@ def get_current_users():
     current_users = [username for username in users]
     return current_users
 
-class Message:
-    def __init__(self, user):
-        self.user = user
-        self.message = input("Enter a message: ")
-
-class User:
+class User_Form:
     def __init__(self):
-        #just some class stuff
         self.name = None
         self.username = None
-        self.inbox = []
 
-        self.tk_user_form()
-
-    def tk_user_form(self):
+        self.form()
+    def form(self):
         # TKINTER HELL
         self.window = tk.Tk()
         self.window.title("New User")
@@ -46,27 +38,39 @@ class User:
         self.btn_submit.pack(side=tk.RIGHT, padx=10, ipadx=10)
         #start application
         self.window.mainloop()
+    def refresh(self):
+        self.window.destroy()
+        self.form()
     def tk_submit(self, *args):
         #assign user variables (finally!)
         self.name = self.name_entry.get()
         chosen_username = self.user_entry.get()
         if chosen_username in users.keys():
             messagebox.showerror("Error", "Username is not available")
-            self.window.destroy()
-            self.tk_user_form()
+            self.refresh() #resets the window
         self.username = self.user_entry.get()
         #close application
         self.window.destroy()
+
+class Message:
+    def __init__(self, user):
+        self.user = user
+        self.message = input("Enter a message: ")
+
+class User(User_Form):
+    def __init__(self):
+        #just some class stuff
+        super().__init__()
+        self.inbox = []
+        self.followers_count = 0
+        self.followers = []
     def new_post(self):
         post = Message(self.name)
         posts['all_users'].append(post)
         posts[self.username].append(post.message)
     def view_posts(self):
         for post in posts['all_users']:
-            print("{0}: {1}".format(
-                post.user,
-                post.message
-            ))
+            print("{0}: {1}".format(post.user,post.message))
     def send_message(self):
         current_users.remove(self.username)
         print(current_users)
@@ -85,12 +89,25 @@ class User:
     def view_inbox(self):
         #goes through every message
         for message in self.inbox:
-            print("From {0}: {1}".format(
-                message.user,
-                message.message
-            ))
+            print("From {0}: {1}".format(message.user,message.message))
             self.inbox.remove(message)
+    def follow_user(self):
+        current_users.remove(self.username)
+        print(current_users)
+        n = input("Who do you want to follow? (enter a username): ")
+        #making sure the user picks an existing username that is not their own
+        if n in current_users:
+            user = n
+        else:
+            while n not in current_users:
+                print(current_users)
+                n = input("Who do you want to follow? (enter a username): ")
+            user = n
+        users[user].followers_count += 1
+        users[user].followers.append(self.username)
+        current_users.append(self.username)
 
+#makes two new users
 for _ in range(2):
     #must run this every time you make new user!!!
     new_user = User()
@@ -98,6 +115,7 @@ for _ in range(2):
     posts[new_user.username] = []
     current_users = get_current_users()
 
+#testing the send_message() and view_inbox() functions
 for user in users: #returns the key rather than the value
     users[user].send_message()
     if len(users[user].inbox) >= 1:
