@@ -85,7 +85,7 @@ while running:
             running = False
 
     # Fill the background with white
-    screen.fill((255, 255, 255))
+    screen.fill((255, 255, 0))
 
     #display the clock
     if int(seconds)%60 == (59 - current_time.second):
