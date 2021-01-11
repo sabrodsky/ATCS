@@ -1,5 +1,15 @@
 import random, time, os
 
+'''plan for game:
+- !!!!! convert user variables into User class
+- !!!!! extend the story (actually have endings and stuff)
+- !!! improve the shop
+- !!!! improve the user interface (i will make a little box that displays health, level and exp, and gold values)
+- ! maybe have a battle interface (show both user and monster atk and hp values)
+- !!!!! convert every single question function into a while loop
+- other ideas that come to me.....
+'''
+
 #other stuff for adventure
 monsters = ["a land-dwelling octopus", "an evil goblin", "a rabid puppy", "The Devil", "the most evil of ghosts", "a giant blob of slime (his name is Bob)", "a purple alien armed with a futuristic laser gun", "a talking tree", "a zombie", "a flying bear with two swords"]
 monsterhp = random.randint(1,80)
