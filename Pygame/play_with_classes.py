@@ -15,8 +15,10 @@ class Ball:
     def __init__(self, r,g,b):
         self.pos_x = 10
         self.pos_y = 10
-        self.change_x = 3
-        self.change_y = 4
+        # self.change_x = random.randint(1, 10)
+        # self.change_y = random.randint(1, 10)
+        self.change_x = 0.5
+        self.change_y = 0.5
         self.radius = 10
         self.color = hsv2rgb(r,g,b)
     def move(self):
@@ -48,10 +50,13 @@ while running:
     for ball in balls:
         ball.move()
         ball.show()
+    
+    # if len(balls) >= 300:
+    #     balls.pop(0)
 
     # Flip the display
     pygame.display.flip()
-    # pygame.time.wait(100)
+    # pygame.time.wait(5)
     count += 1
 
 # Done! Time to quit.
