@@ -4,21 +4,9 @@ import random, time, os, math, textwrap, sys
 WARNING: I'm not sure if anyone will read this, but there is a bug and I have no idea how to fix it :/
 Once you defeat the final boss, the game won't end. You can do whatever you want (there isn't much), but
 I included a quit function in the game. Type 'q' or 'quit' to end the game. Yay.........................
-'''
 
-#NOTE: after this project is over, i may continue to develop this game. i want to actually implement the monsters and new equipment/items to the game...
-''' plan for future:
-- scatter monsters around tundra and jungle (maybe just replenish the monsters rather than have a fixed amount?)
-	- maybe make new realms (ie. desert, city, farmland, etc.)
-- offer more things in the shop (maybe have infinite stock)
-	- water (replenish some health), armor (damage reduction), other food (more stat increments), weapons (damage boost)
-	- make harder monsters (or make user boosts less good)
-- implement user quests (might have to expand the story world a little bit)
-	- maybe have requirements to level up?
-- maybe allow user to roam freely after defeating boss?
-- add data permanence (track user progress the map / scene_visits function...?)
-- tinker with tkinter (better interface)
-- other things that come to me................
+Also, if you use a different program to run this code (I used Visual Studio Code),
+the formatting might be messed up... Oh well.
 '''
 
 #general, helpful stuff
@@ -67,6 +55,7 @@ def cont():
 	input("\n press [enter] to continue ")
 
 
+#character classes
 class Monster:
 	monsters = ["a land-dwelling octopus", "an evil goblin", "a rabid puppy", "The Devil", 
 	"the most evil of ghosts", "a giant blob of slime (his name is Bob)", 
@@ -148,6 +137,69 @@ class User:
 		print("\nYAY! You were rewarded with {} gold and {} xp!".format(rewards[0], rewards[1]))
 		self.level_up()
 	# def get_quest(self):
+	def print_ui(self):
+		lvl_two = ['HP', 'ATK', 'Gold']
+		selfvars = [user.name, user.lvl, user.xp]
+		selfvars2 = [user.hp, user.atk, user.gold]
+
+		#figuring out the dimensions
+		max_char = 0
+		string1 = "| {0} | Level: {1} ({2}/{3}) |".format(user.name, user.lvl, user.xp, User.xp_requirement[user.lvl])
+		string2 = "| HP: {0}/{1} | ATK: {2} | Gold: {3} |".format(user.hp, user.maxhp, user.atk, user.gold)
+		s1_sum = len(string1)
+		s2_sum = len(string2)
+		s1_spaces = s2_spaces = 0
+		if s2_sum > s1_sum:
+			if (s2_sum - s1_sum)%4 == 0:
+				s1_spaces = (s2_sum-s1_sum)/4
+			else:
+				s1_spaces = 4-(s1_sum%4)
+			s2_spaces = 4 - (s2_sum%4)
+		elif s1_sum > s2_sum:
+			if (s1_sum - s2_sum)%2 == 0:
+				s2_spaces = (s1_sum-s2_sum)//2
+			else:
+				if (s1_sum - s2_sum) < 2:
+					s2_spaces = 1
+				else:
+					s2_spaces = (s1_sum-s2_sum+1)//2
+			s1_spaces = 4 - (s1_sum%4)
+		#they should both try and pad for the same number (but the larger of the two)
+		if s2_sum + s2_spaces > s1_sum + s1_spaces: 
+			max_char = s2_sum + s2_spaces
+			while s2_sum + s2_spaces != s1_sum + s1_spaces:
+				s1_spaces += 1
+		else:
+			max_char = s1_sum + s1_spaces
+			while s2_sum + s2_spaces != s1_sum + s1_spaces:
+				s2_spaces += 1
+
+		#printing the profile
+		print('{0}'.format('-' * max_char))
+		mid_space = 0
+		end_space = 0
+		while (s1_sum + mid_space + end_space) < (s1_sum + s1_spaces):
+			if (s1_sum + mid_space + end_space) + 2 > (s1_sum + s1_spaces):
+				end_space += 1
+			else:
+				mid_space += 2
+		print("| {0} {4}| Level: {1} ({2}/{3}) {4}{5}|".format(user.name, user.lvl, user.xp, User.xp_requirement[user.lvl], mid_space//2*' ', end_space*' '))
+		print('|{0}|'.format('-'*(max_char-2)))
+		mid_space = 0
+		end_space = 0
+		while (s2_sum + mid_space + end_space) < (s2_sum + s2_spaces):
+			if (s2_sum + mid_space + end_space) + 3 > (s2_sum + s2_spaces):
+				end_space += 1
+			else:
+				mid_space += 3
+		print("| HP: {0}/{1} {4}| ATK: {2} {4}| Gold: {3} {4}{5}|".format(user.hp, user.maxhp, user.atk, user.gold, mid_space//3*' ', end_space*' '))
+		print('{0}'.format('-' * max_char))
+	
+	def view_inventory(self):
+		title("{}'s Inventory".format(user.name))
+		for key in user.inventory:
+			print("""
+	{}: {}""".format(key, user.inventory[key]))
 
 
 class Battle:
@@ -196,6 +248,7 @@ class Battle:
 			user.alive = False
 
 
+#scene classes... yay
 class Scene: #YAY GOTHONS -- teaching me how to use inheritance better :)
 	def __init__(self):
 		self.title = "example"
@@ -524,6 +577,7 @@ class Death(Scene):
 		"""))
 
 
+#map object
 class Map:
 	scenes = {
 		'example': Scene(),
@@ -552,6 +606,7 @@ class Map:
 		self.first_scene = Map.scenes.get(first_scene)
 
 
+#game object
 class Game:
 	items = {
 		'apple': 'atk +10, hp +15',
@@ -563,7 +618,7 @@ class Game:
 		self.boss_defeated = False
 		clear()
 		self.intro()
-	
+
 	def intro(self):
 		clear()
 		print("Welcome to The Wanderer!\n")
@@ -571,11 +626,12 @@ class Game:
 		print("""
 	Hint: if you need help, type 'h' or 'help'""")
 		clear(5)
-	
+
 	def start(self):
 		global user
 		user = User()
 
+		#i needed separate game loops for the main realm and either the tundra or jungle realm...
 		while self.map.tundra != True or self.map.jungle != True:
 			if self.cur_scene.visits == 0:
 				self.cur_scene.travel = True
@@ -628,70 +684,6 @@ class Game:
 		else:
 			self.cur_scene = Death()
 			self.cur_scene.play()
-	
-	def print_ui(self):
-		lvl_two = ['HP', 'ATK', 'Gold']
-		selfvars = [user.name, user.lvl, user.xp]
-		selfvars2 = [user.hp, user.atk, user.gold]
-
-		#figuring out the dimensions
-		max_char = 0
-		string1 = "| {0} | Level: {1} ({2}/{3}) |".format(user.name, user.lvl, user.xp, User.xp_requirement[user.lvl])
-		string2 = "| HP: {0}/{1} | ATK: {2} | Gold: {3} |".format(user.hp, user.maxhp, user.atk, user.gold)
-		s1_sum = len(string1)
-		s2_sum = len(string2)
-		s1_spaces = s2_spaces = 0
-		if s2_sum > s1_sum:
-			if (s2_sum - s1_sum)%4 == 0:
-				s1_spaces = (s2_sum-s1_sum)/4
-			else:
-				s1_spaces = 4-(s1_sum%4)
-			s2_spaces = 4 - (s2_sum%4)
-		elif s1_sum > s2_sum:
-			if (s1_sum - s2_sum)%2 == 0:
-				s2_spaces = (s1_sum-s2_sum)//2
-			else:
-				if (s1_sum - s2_sum) < 2:
-					s2_spaces = 1
-				else:
-					s2_spaces = (s1_sum-s2_sum+1)//2
-			s1_spaces = 4 - (s1_sum%4)
-		#they should both try and pad for the same number (but the larger of the two)
-		if s2_sum + s2_spaces > s1_sum + s1_spaces: 
-			max_char = s2_sum + s2_spaces
-			while s2_sum + s2_spaces != s1_sum + s1_spaces:
-				s1_spaces += 1
-		else:
-			max_char = s1_sum + s1_spaces
-			while s2_sum + s2_spaces != s1_sum + s1_spaces:
-				s2_spaces += 1
-
-		#printing the profile
-		print('{0}'.format('-' * max_char))
-		mid_space = 0
-		end_space = 0
-		while (s1_sum + mid_space + end_space) < (s1_sum + s1_spaces):
-			if (s1_sum + mid_space + end_space) + 2 > (s1_sum + s1_spaces):
-				end_space += 1
-			else:
-				mid_space += 2
-		print("| {0} {4}| Level: {1} ({2}/{3}) {4}{5}|".format(user.name, user.lvl, user.xp, User.xp_requirement[user.lvl], mid_space//2*' ', end_space*' '))
-		print('|{0}|'.format('-'*(max_char-2)))
-		mid_space = 0
-		end_space = 0
-		while (s2_sum + mid_space + end_space) < (s2_sum + s2_spaces):
-			if (s2_sum + mid_space + end_space) + 3 > (s2_sum + s2_spaces):
-				end_space += 1
-			else:
-				mid_space += 3
-		print("| HP: {0}/{1} {4}| ATK: {2} {4}| Gold: {3} {4}{5}|".format(user.hp, user.maxhp, user.atk, user.gold, mid_space//3*' ', end_space*' '))
-		print('{0}'.format('-' * max_char))
-	
-	def view_inventory(self):
-		title("{}'s Inventory".format(user.name))
-		for key in user.inventory:
-			print("""
-	{}: {}""".format(key, user.inventory[key]))
 
 	def book_picker(self, scene):
 		book_responses = [
@@ -730,6 +722,7 @@ class Game:
 			return 'polaris'
 
 
+#oof... the large parser (which may not be formatted the way dr. b wanted...)
 class Parser:
 	def __init__(self, cur_scene):
 		self.scene = cur_scene
@@ -748,7 +741,7 @@ class Parser:
 						print("you cannot attack this monster...")
 				elif 'b' in check_action or 'backpack' in check_action:
 					if obj == 'backpack' or obj == 'b':
-						new_game.view_inventory()
+						user.view_inventory()
 				elif 'c' in check_action or 'consume' in check_action:
 					if obj in user.inventory.keys():
 						if obj == 'apple':
@@ -1075,15 +1068,15 @@ class Parser:
 										user.inventory['apple'] += 3
 										user.inventory['key'] += 2
 										user.gold += 5
-										print("WOO... you found 3 apples, 5 gold, and 2 keys!")
+										print("WOOOOOOOO... you found 3 apples, 5 gold, and 2 keys!")
 									if self.scene.title == 'hut':
 										user.inventory['apple'] += 3
 										user.inventory['key'] += 2
 										user.gold += 5
-										print("WOO... you got 3 apples, 5 gold, and 2 keys!")
+										print("WOOOOOOOO... you got 3 apples, 5 gold, and 2 keys!")
 									if self.scene.title == 'waterfall':
 										user.inventory['apple'] += 8
-										print("YAYYYYY 8 apples...")
+										print("YAYYYYY.... 8 apples...")
 									self.scene.chest_opened = True
 						elif obj == 'refrigerator':
 							if self.scene.title == 'kitchen':
@@ -1106,7 +1099,7 @@ class Parser:
 					else:
 						print('you cannot open that...')
 				elif 'p' in check_action or 'profile' in check_action:
-					new_game.print_ui()
+					user.print_ui()
 				elif 'q' in check_action or 'quit' in check_action:
 					clear()
 					for x in range(random.randint(10,30)):
